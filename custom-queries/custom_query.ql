@@ -1,5 +1,9 @@
- /**
+/**
+ * @name Taint propagation from network byte swap to memcpy
+ * @description I dati non validati provenienti dalla rete (ntohl, ntohs) raggiungono l'argomento della lunghezza di memcpy, rischiando un buffer overflow.
  * @kind path-problem
+ * @problem.severity error
+ * @id cpp/uboot/network-byteswap-to-memcpy
  */
 
  import cpp
