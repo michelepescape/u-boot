@@ -46,15 +46,17 @@ jobs:
       shell: bash
       # 3. Si forniscono le istruzioni reali per compilare U-Boot
       run: |
-        echo "Installazione delle dipendenze per U-Boot..."
+        echo "Installazione delle dipendenze di sistema..."
         sudo apt-get update
-        sudo apt-get install -y build-essential bison flex libssl-dev bc libsdl2-dev
+        # Si integra libsdl1.2-dev per risolvere la mancanza di sdl-config
+        sudo apt-get install -y build-essential bison flex libssl-dev bc libsdl1.2-dev
         
-        echo "Configurazione della board (sandbox per esecuzione nativa)..."
+        echo "Generazione del file di configurazione (.config)..."
         make sandbox_defconfig
         
-        echo "Avvio della compilazione tracciata da CodeQL..."
-        make -j$(nproc)
+        echo "Compilazione del codice sorgente..."
+        # Si inietta il flag -fcommon per garantire la compatibilità del compilatore
+        make HOSTCFLAGS="-fcommon" -j$(nproc)
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
